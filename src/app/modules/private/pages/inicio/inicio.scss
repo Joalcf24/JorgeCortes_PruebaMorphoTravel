@@ -1,0 +1,26 @@
+.welcome-page {
+	width: 100%;
+}
+
+.welcome-hero {
+	border: var(--border-width-default) solid var(--border-color-default);
+	border-radius: var(--border-radius-md);
+}
+
+.hero-label {
+	font-size: 0.875rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--fg-muted);
+}
+
+.insight-card {
+	border: var(--border-width-default) solid var(--border-color-default);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--bg-default);
+}
+
+.insight-icon {
+	font-size: 1.25rem;
+	color: var(--fg-brand);
+}

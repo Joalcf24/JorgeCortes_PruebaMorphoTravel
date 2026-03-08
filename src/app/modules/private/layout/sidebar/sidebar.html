@@ -1,0 +1,18 @@
+<aside class="app-sidebar border-end p-3">
+	<nav class="d-flex flex-column gap-2">
+		<a
+			routerLink="/private/inicio"
+			routerLinkActive="active"
+			[routerLinkActiveOptions]="{ exact: true }"
+			class="sidebar-link"
+		>
+			<i class="bi bi-house-door"></i>
+			<span>Inicio</span>
+		</a>
+
+		<a routerLink="/private/facturas" routerLinkActive="active" class="sidebar-link">
+			<i class="bi bi-receipt"></i>
+			<span>Facturas</span>
+		</a>
+	</nav>
+</aside>

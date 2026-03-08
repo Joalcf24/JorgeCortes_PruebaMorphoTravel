@@ -1,0 +1,14 @@
+main {
+	display: flex;
+
+	.wrapper {
+		overflow-x: hidden;
+		display: flex;
+		flex-direction: column;
+
+		width: 100%;
+		padding: var(--space-lg);
+
+		background-color: #f8fafc;
+	}
+}

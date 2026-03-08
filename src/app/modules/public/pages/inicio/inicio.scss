@@ -1,0 +1,41 @@
+.login-page {
+	position: relative;
+	min-height: 100vh;
+	background-color: var(--bg-default);
+	background-image: url('/assets/images/fondo.png');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.login-page::before {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(135deg, rgb(0 0 0 / 42%), rgb(0 0 0 / 20%));
+	content: '';
+}
+
+.login-card {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	max-width: 420px;
+	padding: var(--space-lg);
+	background-color: rgb(255 255 255 / 90%);
+	border: var(--border-width-default) solid var(--border-color-default);
+	border-radius: var(--border-radius-md);
+	backdrop-filter: var(--backdrop-blur-sm);
+}
+
+.login-btn {
+	color: var(--fg-on-brand);
+	background-color: var(--bg-brand);
+	border-color: var(--bg-brand);
+}
+
+.login-btn:hover,
+.login-btn:focus-visible {
+	color: var(--fg-on-brand);
+	background-color: var(--bg-brand-hover);
+	border-color: var(--bg-brand-hover);
+}

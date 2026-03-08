@@ -1,0 +1,452 @@
+<section class="invoice-page container-fluid px-4 py-4">
+	<div class="invoice-page__header d-flex align-items-center justify-content-between mb-3">
+		<h2 class="mb-0 d-flex align-items-center gap-2">
+			<i class="bi bi-receipt-cutoff"></i>
+			<span>Facturas</span>
+		</h2>
+		<button class="btn btn-dark" type="button" (click)="openCreateInvoiceModal()">
+			<i class="bi bi-plus-lg me-2"></i>
+			Crear factura
+		</button>
+	</div>
+
+	@if (isLoading) {
+		<div class="alert alert-secondary mb-0">Cargando facturas...</div>
+	} @else {
+		@if (error) {
+			<div class="alert alert-warning">{{ error }}</div>
+		}
+
+		@if (invoices.length === 0) {
+			<div class="alert alert-info mb-0">No hay facturas registradas.</div>
+		} @else {
+			<div class="invoice-list-card table-responsive">
+				<table class="table table-hover align-middle mb-0">
+					<thead>
+						<tr>
+							<th>Factura</th>
+							<th>Fecha</th>
+							<th>Usuario</th>
+							<th class="text-end">Lineas</th>
+							<th class="text-end">Total</th>
+							<th class="text-end">Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (item of invoices; track item.invoice.NUMERO_FACTURA) {
+							<tr>
+								<td class="fw-semibold">#{{ item.invoice.NUMERO_FACTURA }}</td>
+								<td>{{ item.invoice.FECHA }}</td>
+								<td>{{ item.invoice.USUARIO }}</td>
+								<td class="text-end">{{ item.details.length }}</td>
+								<td class="text-end">{{ item.invoice.TOTAL | number: '1.2-2' }}</td>
+								<td class="text-end">
+									<button
+										class="btn btn-sm btn-outline-dark me-2"
+										type="button"
+										(click)="openEditInvoiceModal(item)"
+									>
+										<i class="bi bi-pencil-square me-1"></i>
+										Editar
+									</button>
+									<button
+										class="btn btn-sm btn-outline-secondary"
+										type="button"
+										(click)="openInvoiceDetails(item)"
+									>
+										<i class="bi bi-eye me-1"></i>
+										Ver
+									</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	}
+</section>
+
+@if (selectedInvoice) {
+	<div class="invoice-modal-backdrop" (click)="closeInvoiceDetails()"></div>
+	<div class="invoice-modal card shadow">
+		<div class="card-header d-flex align-items-center justify-content-between">
+			<h5 class="mb-0 d-flex align-items-center gap-2">
+				<i class="bi bi-file-earmark-text"></i>
+				<span>Factura #{{ selectedInvoice.invoice.NUMERO_FACTURA }}</span>
+			</h5>
+			<button class="btn btn-sm btn-outline-dark" type="button" (click)="closeInvoiceDetails()">
+				Cerrar
+			</button>
+		</div>
+
+		<div class="card-body">
+			<div class="row g-3 mb-3">
+				<div class="col-12 col-md-4">
+					<small class="text-muted d-block">Usuario</small>
+					<strong>{{ selectedInvoice.invoice.USUARIO }}</strong>
+				</div>
+				<div class="col-12 col-md-4">
+					<small class="text-muted d-block">Fecha</small>
+					<strong>{{ selectedInvoice.invoice.FECHA }}</strong>
+				</div>
+				<div class="col-12 col-md-4">
+					<small class="text-muted d-block">Total</small>
+					<strong>{{ selectedInvoice.invoice.TOTAL | number: '1.2-2' }}</strong>
+				</div>
+			</div>
+
+			<div class="table-responsive">
+				<table class="table table-sm align-middle mb-0">
+					<thead>
+						<tr>
+							<th>Linea</th>
+							<th>Codigo</th>
+							<th>Articulo</th>
+							<th class="text-end">Cantidad</th>
+							<th class="text-end">Precio</th>
+							<th class="text-end">Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (detail of selectedInvoice.details; track detail.LINEA) {
+							<tr>
+								<td>{{ detail.LINEA }}</td>
+								<td>{{ detail.CODIGO_ARTICULO }}</td>
+								<td>{{ detail.ARTICULO }}</td>
+								<td class="text-end">{{ detail.CANTIDAD }}</td>
+								<td class="text-end">{{ detail.PRECIO | number: '1.2-2' }}</td>
+								<td class="text-end">{{ detail.TOTAL_LINEA | number: '1.2-2' }}</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+}
+
+@if (isCreateModalOpen) {
+	<div class="invoice-modal-backdrop"></div>
+	<div class="invoice-modal card shadow">
+		<div class="card-header d-flex align-items-center justify-content-between">
+			<h5 class="mb-0 d-flex align-items-center gap-2">
+				<i class="bi bi-journal-plus"></i>
+				<span>Crear factura</span>
+			</h5>
+			<button class="btn btn-sm btn-outline-dark" type="button" (click)="closeCreateInvoiceModal()">
+				Cerrar
+			</button>
+		</div>
+
+		<div class="card-body">
+			<div class="row g-3">
+				<div class="col-12 col-md-6">
+					<label class="form-label">Numero de factura</label>
+					<input
+						type="number"
+						class="form-control"
+						[value]="newInvoiceNumber"
+						(input)="newInvoiceNumber = $any($event.target).value"
+					/>
+				</div>
+				<div class="col-12 col-md-6">
+					<label class="form-label">Fecha</label>
+					<input
+						type="date"
+						class="form-control"
+						[value]="newInvoiceDate"
+						(input)="newInvoiceDate = $any($event.target).value"
+					/>
+				</div>
+			</div>
+
+			<div class="d-flex align-items-center justify-content-between mt-4 mb-2">
+				<h6 class="mb-0">Detalles</h6>
+				<button
+					class="btn btn-sm btn-outline-secondary"
+					type="button"
+					(click)="openAddDetailModal('create')"
+				>
+					<i class="bi bi-bag-plus me-1"></i>
+					Agregar detalle
+				</button>
+			</div>
+
+			@if (draftInvoiceDetails.length === 0) {
+				<div class="alert alert-info mb-0">No hay detalles agregados.</div>
+			} @else {
+				<div class="table-responsive">
+					<table class="table table-sm align-middle mb-0">
+						<thead>
+							<tr>
+								<th>Codigo</th>
+								<th>Articulo</th>
+								<th class="text-end">Cantidad</th>
+								<th class="text-end">Precio</th>
+								<th class="text-end">Total</th>
+								<th class="text-end"></th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (detail of draftInvoiceDetails; track $index) {
+								<tr>
+									<td>{{ detail.productCode }}</td>
+									<td>{{ detail.productDescription }}</td>
+									<td class="text-end">{{ detail.quantity }}</td>
+									<td class="text-end">{{ detail.unitPrice | number: '1.2-2' }}</td>
+									<td class="text-end">
+										{{ detail.unitPrice * detail.quantity | number: '1.2-2' }}
+									</td>
+									<td class="text-end">
+										<button
+											class="btn btn-sm btn-outline-danger"
+											type="button"
+											(click)="removeDraftDetail($index)"
+										>
+											<i class="bi bi-trash me-1"></i>
+											Quitar
+										</button>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			}
+
+			@if (createInvoiceNotice) {
+				<div class="alert alert-warning mt-3 mb-0">{{ createInvoiceNotice }}</div>
+			}
+
+			@if (createInvoiceError) {
+				<div class="alert alert-danger mt-3 mb-0">{{ createInvoiceError }}</div>
+			}
+		</div>
+
+		<div class="card-footer d-flex justify-content-end gap-2">
+			<button class="btn btn-outline-secondary" type="button" (click)="closeCreateInvoiceModal()">
+				Cancelar
+			</button>
+			<button
+				class="btn btn-dark"
+				type="button"
+				[disabled]="isSavingInvoice"
+				(click)="saveInvoice()"
+			>
+				@if (isSavingInvoice) {
+					Guardando...
+				} @else {
+					Guardar
+				}
+			</button>
+		</div>
+	</div>
+}
+
+@if (isEditModalOpen) {
+	<div class="invoice-modal-backdrop"></div>
+	<div class="invoice-modal card shadow">
+		<div class="card-header d-flex align-items-center justify-content-between">
+			<h5 class="mb-0 d-flex align-items-center gap-2">
+				<i class="bi bi-pencil-square"></i>
+				<span>Editar factura #{{ editInvoiceNumber }}</span>
+			</h5>
+			<button class="btn btn-sm btn-outline-dark" type="button" (click)="closeEditInvoiceModal()">
+				Cerrar
+			</button>
+		</div>
+
+		<div class="card-body">
+			<div class="row g-3">
+				<div class="col-12 col-md-4">
+					<small class="text-muted d-block">Numero</small>
+					<strong>#{{ editInvoiceNumber }}</strong>
+				</div>
+				<div class="col-12 col-md-4">
+					<small class="text-muted d-block">Fecha</small>
+					<strong>{{ editInvoiceDate }}</strong>
+				</div>
+				<div class="col-12 col-md-4">
+					<small class="text-muted d-block">Usuario</small>
+					<strong>{{ editInvoiceUser }}</strong>
+				</div>
+			</div>
+
+			<div class="d-flex align-items-center justify-content-between mt-4 mb-2">
+				<h6 class="mb-0">Detalles</h6>
+				<button
+					class="btn btn-sm btn-outline-secondary"
+					type="button"
+					(click)="openAddDetailModal('edit')"
+				>
+					<i class="bi bi-bag-plus me-1"></i>
+					Agregar articulo
+				</button>
+			</div>
+
+			@if (editInvoiceDetails.length === 0) {
+				<div class="alert alert-info mb-0">No hay detalles en la factura.</div>
+			} @else {
+				<div class="table-responsive">
+					<table class="table table-sm align-middle mb-0">
+						<thead>
+							<tr>
+								<th>Linea</th>
+								<th>Codigo</th>
+								<th>Articulo</th>
+								<th class="text-end">Cantidad</th>
+								<th class="text-end">Precio</th>
+								<th class="text-end">Total</th>
+								<th class="text-end"></th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (detail of editInvoiceDetails; track $index) {
+								<tr>
+									<td>
+										@if (detail.lineNumber !== null) {
+											{{ detail.lineNumber }}
+										} @else {
+											Nuevo
+										}
+									</td>
+									<td>{{ detail.productCode }}</td>
+									<td>{{ detail.productDescription }}</td>
+									<td class="text-end">{{ detail.quantity }}</td>
+									<td class="text-end">{{ detail.unitPrice | number: '1.2-2' }}</td>
+									<td class="text-end">
+										{{ detail.unitPrice * detail.quantity | number: '1.2-2' }}
+									</td>
+									<td class="text-end">
+										<button
+											class="btn btn-sm btn-outline-danger"
+											type="button"
+											(click)="removeEditDetail($index)"
+										>
+											<i class="bi bi-trash me-1"></i>
+											Quitar
+										</button>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			}
+
+			@if (editInvoiceError) {
+				<div class="alert alert-danger mt-3 mb-0">{{ editInvoiceError }}</div>
+			}
+		</div>
+
+		<div class="card-footer d-flex justify-content-end gap-2">
+			<button class="btn btn-outline-secondary" type="button" (click)="closeEditInvoiceModal()">
+				Cancelar
+			</button>
+			<button
+				class="btn btn-dark"
+				type="button"
+				[disabled]="isSavingEditInvoice"
+				(click)="saveEditedInvoice()"
+			>
+				@if (isSavingEditInvoice) {
+					Guardando...
+				} @else {
+					Guardar cambios
+				}
+			</button>
+		</div>
+	</div>
+}
+
+@if (isProductModalOpen) {
+	<div class="invoice-modal-backdrop"></div>
+	<div class="invoice-mini-modal card shadow">
+		<div class="card-header d-flex align-items-center justify-content-between">
+			<h6 class="mb-0">
+				@if (detailModalTarget === 'edit') {
+					Agregar articulo a factura
+				} @else {
+					Agregar detalle
+				}
+			</h6>
+			<button class="btn btn-sm btn-outline-dark" type="button" (click)="closeAddDetailModal()">
+				Cerrar
+			</button>
+		</div>
+
+		<div class="card-body">
+			<label class="form-label">Buscar articulo</label>
+			<input
+				type="text"
+				class="form-control mb-3"
+				[value]="productSearchTerm"
+				(input)="onProductSearchInput($any($event.target).value)"
+				placeholder="Codigo o descripcion"
+			/>
+
+			@if (isLoadingProducts) {
+				<div class="alert alert-secondary">Cargando productos...</div>
+			} @else {
+				<label class="form-label">Selecciona un articulo</label>
+				<div class="table-responsive product-table mb-3">
+					<table class="table table-sm table-hover align-middle mb-0">
+						<thead>
+							<tr>
+								<th>Codigo</th>
+								<th>Descripcion</th>
+								<th class="text-end">Precio</th>
+								<th class="text-end"></th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (product of filteredProducts; track product.CODIGO_ARTICULO) {
+								<tr [class.table-active]="selectedProductCode === product.CODIGO_ARTICULO">
+									<td>{{ product.CODIGO_ARTICULO }}</td>
+									<td>{{ product.DESCRIPCION }}</td>
+									<td class="text-end">{{ product.PRECIO | number: '1.2-2' }}</td>
+									<td class="text-end">
+										<button
+											class="btn btn-sm"
+											[class.btn-dark]="selectedProductCode === product.CODIGO_ARTICULO"
+											[class.btn-outline-dark]="selectedProductCode !== product.CODIGO_ARTICULO"
+											type="button"
+											(click)="selectProduct(product.CODIGO_ARTICULO)"
+										>
+											@if (selectedProductCode === product.CODIGO_ARTICULO) {
+												Seleccionado
+											} @else {
+												Seleccionar
+											}
+										</button>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			}
+
+			<label class="form-label">Cantidad</label>
+			<input
+				type="number"
+				class="form-control"
+				min="1"
+				[value]="selectedProductQuantity"
+				(input)="onSelectedProductQuantityChange($any($event.target).value)"
+			/>
+
+			@if (productPickerError) {
+				<div class="alert alert-danger mt-3 mb-0">{{ productPickerError }}</div>
+			}
+		</div>
+
+		<div class="card-footer d-flex justify-content-end gap-2">
+			<button class="btn btn-outline-secondary" type="button" (click)="closeAddDetailModal()">
+				Cancelar
+			</button>
+			<button class="btn btn-dark" type="button" (click)="addSelectedDetail()">Agregar</button>
+		</div>
+	</div>
+}

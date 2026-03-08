@@ -1,0 +1,138 @@
+.invoice-page {
+	min-height: calc(100vh - 64px);
+	background-color: transparent;
+
+	&__header {
+		padding: var(--space-md) var(--space-md) var(--space-sm);
+		border-bottom: var(--border-width-default) solid var(--border-color-default);
+		margin-bottom: var(--space-md);
+
+		h2 {
+			margin: 0;
+			font-size: 1.75rem;
+			color: var(--fg-default);
+		}
+
+		.btn-dark {
+			color: var(--fg-on-brand);
+			background-color: var(--bg-brand);
+			border-color: var(--bg-brand);
+
+			&:hover,
+			&:focus-visible {
+				background-color: var(--bg-brand-hover);
+				border-color: var(--bg-brand-hover);
+			}
+		}
+	}
+}
+
+.invoice-list-card {
+	border: var(--border-width-default) solid var(--border-color-default);
+	border-radius: var(--border-radius-md);
+	background-color: var(--bg-default);
+	overflow: hidden;
+
+	.table {
+		margin-bottom: 0;
+
+		thead th {
+			background-color: var(--bg-muted);
+			color: var(--fg-muted);
+			font-size: 0.8rem;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+			border-bottom: var(--border-width-default) solid var(--border-color-default);
+		}
+
+		tbody tr:hover {
+			background-color: var(--bg-default-hover);
+		}
+
+		tbody td {
+			vertical-align: middle;
+		}
+	}
+}
+
+.invoice-modal-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: var(--z-index-overlay);
+	background-color: rgb(0 0 0 / 36%);
+	backdrop-filter: var(--backdrop-blur-sm);
+}
+
+.invoice-modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: var(--z-index-modal);
+	width: min(960px, calc(100vw - 2rem));
+	max-height: calc(100vh - 2rem);
+	transform: translate(-50%, -50%);
+	overflow: auto;
+	border: var(--border-width-default) solid var(--border-color-default);
+	border-radius: var(--border-radius-md);
+
+	.card-header {
+		background-color: var(--bg-muted);
+		border-bottom-color: var(--border-color-default);
+	}
+
+	.card-footer {
+		background-color: var(--bg-default-hover);
+		border-top-color: var(--border-color-default);
+	}
+
+	.table thead th {
+		background-color: var(--bg-muted);
+		color: var(--fg-muted);
+	}
+}
+
+.invoice-mini-modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: var(--z-index-modal);
+	width: min(720px, calc(100vw - 2rem));
+	max-height: calc(100vh - 2rem);
+	transform: translate(-50%, -50%);
+	overflow: auto;
+	border: var(--border-width-default) solid var(--border-color-default);
+	border-radius: var(--border-radius-md);
+
+	.card-header {
+		background-color: var(--bg-muted);
+		border-bottom-color: var(--border-color-default);
+	}
+
+	.card-footer {
+		background-color: var(--bg-default-hover);
+		border-top-color: var(--border-color-default);
+	}
+}
+
+.product-table {
+	max-height: 320px;
+	overflow: auto;
+	border: var(--border-width-default) solid var(--border-color-default);
+	border-radius: var(--border-radius-sm);
+
+	.table {
+		margin-bottom: 0;
+
+		thead th {
+			position: sticky;
+			top: 0;
+			z-index: 1;
+			background-color: var(--bg-muted);
+			color: var(--fg-muted);
+		}
+
+		tbody tr.table-active {
+			background-color: var(--bg-brand-soft);
+		}
+	}
+}

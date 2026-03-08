@@ -1,0 +1,26 @@
+<section class="welcome-page d-flex flex-column gap-4">
+	<div class="welcome-hero p-4 p-md-5">
+		<p class="hero-label mb-2">Panel privado</p>
+		<h1 class="mb-2">{{ greeting }}, {{ userDisplayName }}</h1>
+		<p class="mb-0 text-body-secondary">
+			Bienvenido al tablero. Aquí verás insights y resúmenes de tu operación.
+		</p>
+	</div>
+
+	<div class="row g-3">
+		@for (insight of mockInsights; track insight.title) {
+			<div class="col-12 col-md-6">
+				<article class="insight-card h-100 p-4">
+					<div class="d-flex align-items-start justify-content-between gap-3">
+						<div class="d-flex align-items-center gap-2">
+							<i class="bi {{ insight.icon }} insight-icon"></i>
+							<h3 class="mb-0">{{ insight.title }}</h3>
+						</div>
+						<span class="badge text-bg-light">Próximamente</span>
+					</div>
+					<p class="mt-3 mb-0 text-body-secondary">{{ insight.message }}</p>
+				</article>
+			</div>
+		}
+	</div>
+</section>

@@ -1,0 +1,28 @@
+.app-sidebar {
+	width: 240px;
+	min-height: calc(100vh - 73px);
+	background-color: var(--bg-default);
+	border-color: var(--border-color-default) !important;
+}
+
+.sidebar-link {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	padding: var(--space-sm) var(--space-md);
+	border: var(--border-width-default) solid transparent;
+	border-radius: var(--border-radius-sm);
+	color: var(--fg-muted);
+	transition: background-color 0.2s ease;
+}
+
+.sidebar-link:hover {
+	background-color: var(--bg-muted);
+	color: var(--fg-default);
+}
+
+.sidebar-link.active {
+	background-color: var(--bg-brand-soft);
+	border-color: var(--border-color-default);
+	color: var(--fg-default);
+}
