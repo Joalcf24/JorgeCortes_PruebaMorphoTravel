@@ -469,24 +469,27 @@ export class Facturas implements OnInit {
 		return [...items].sort((a, b) => b.invoice.NUMERO_FACTURA - a.invoice.NUMERO_FACTURA);
 	}
 
-	private validateInvoiceNotExists(
-		invoiceNumber: number
-	): Observable<ObtieneFacturaResponse | null> {
-		return this.facturasService.getInvoice(invoiceNumber).pipe(
-			map((response) => {
-				if (response?.FACTURA && Number(response.FACTURA.NUMERO_FACTURA) > 0) {
-					return response;
-				}
+private validateInvoiceNotExists(
+	invoiceNumber: number
+): Observable<ObtieneFacturaResponse | null> {
+	return this.facturasService.getInvoice(invoiceNumber).pipe(
+		map((response) => {
+			if (response?.FACTURA && Number(response.FACTURA.NUMERO_FACTURA) > 0) {
+				return response;
+			}
 
-				return null;
-			}),
-			catchError((error: unknown) => {
-				if (error instanceof HttpErrorResponse && error.status === 404) {
-					return of(null);
-				}
+			return null;
+		}),
+		catchError((error: unknown) => {
+			if (
+				error instanceof HttpErrorResponse &&
+				(error.status === 404 || error.status === 400)
+			) {
+				return of(null);
+			}
 
-				return throwError(() => error);
-			})
-		);
-	}
+			return throwError(() => error);
+		})
+	);
+}
 }
